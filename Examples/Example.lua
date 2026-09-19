@@ -1,0 +1,64 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/YOUR_USERNAME/UiLibraryStyleImgui/main/Library.lua"))()
+
+Library:SetTheme("Ocean")
+
+local Window, WindowObj = Library:AddWindow("Example", {
+	main_color = Color3.fromRGB(41, 74, 122),
+	min_size = Vector2.new(320, 240),
+	can_resize = true,
+})
+
+local Main, MainTab = Window:AddTab("Main")
+local Combat, CombatTab = Window:AddTab("Combat")
+local Misc, MiscTab = Window:AddTab("Misc")
+
+Main:AddLabel("IMGUI-style UI library")
+Main:AddLabel("optimized for mobile & desktop")
+
+Main:AddButton("Click me", function()
+	print("Button clicked!")
+end)
+
+Main:AddTextBox("Type something...", function(text)
+	print("Input:", text)
+end, { clear = true })
+
+local Switch
+Switch = Main:AddSwitch("Enable feature", function(state)
+	print("Switch:", state)
+end)
+Switch:Set(true)
+
+local Slider
+Slider = Main:AddSlider("Speed", function(value)
+	print("Speed:", value)
+end, { min = 0, max = 200 })
+Slider:Set(100)
+
+local Keybind
+Keybind = Main:AddKeybind("Menu keybind", function()
+	print("Keybind pressed!")
+end, { standard = Enum.KeyCode.RightShift })
+
+Combat:AddLabel("Combat settings")
+
+local Color = Combat:AddColorPicker(function(color)
+	print("Color:", color)
+end)
+
+local Dropdown = Combat:AddDropdown("Target", function(option)
+	print("Dropdown:", option)
+end)
+Dropdown:Add("Head")
+Dropdown:Add("Torso")
+Dropdown:Add("HumanoidRootPart")
+
+Misc:AddButton("Server hop", function()
+	print("Server hop")
+end)
+
+Misc:AddButton("Unload UI", function()
+	WindowObj:Destroy()
+end)
+
+Library:FormatWindows()
