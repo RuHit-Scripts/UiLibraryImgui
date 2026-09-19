@@ -199,8 +199,6 @@ toggle.ZIndex = 2
 toggle.Image = "rbxassetid://4731371541"
 toggle.ImageColor3 = Color3.new(1, 1, 1)
 toggle.ImageTransparency = 0
-toggle.Text = ""
-toggle.TextColor3 = Color3.new(1, 1, 1)
 
 base.Name = "Base"
 base.Parent = bar
