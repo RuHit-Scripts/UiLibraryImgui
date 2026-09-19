@@ -4,20 +4,20 @@
 	into the correct folder structure. No ZIP needed.
 
 	Requirements: executor with HttpService + writefile/isfolder/makefolder
-	Replace YOUR_USERNAME with the real GitHub username.
+	Uses the RuHit-Scripts/UiLibraryImgui repository.
 ]]
 
 local HttpService = game:GetService("HttpService")
-local BASE = "https://raw.githubusercontent.com/YOUR_USERNAME/UiLibraryStyleImgui/main/"
+local BASE = "https://raw.githubusercontent.com/RuHit-Scripts/UiLibraryImgui/main/"
 
 local FILES = {
-	{ url = BASE .. "Library.lua",                    path = "UiLibraryStyleImgui/Library.lua" },
-	{ url = BASE .. "README.md",                      path = "UiLibraryStyleImgui/README.md" },
-	{ url = BASE .. "LICENSE",                        path = "UiLibraryStyleImgui/LICENSE" },
-	{ url = BASE .. "docs/API.md",                    path = "UiLibraryStyleImgui/docs/API.md" },
-	{ url = BASE .. "Themes/Themes.lua",              path = "UiLibraryStyleImgui/Themes/Themes.lua" },
-	{ url = BASE .. "Examples/Example.lua",           path = "UiLibraryStyleImgui/Examples/Example.lua" },
-	{ url = BASE .. "SETUP_INSTRUCTIONS.md",          path = "UiLibraryStyleImgui/SETUP_INSTRUCTIONS.md" },
+	{ url = BASE .. "Library.lua",                    path = "UiLibraryImgui/Library.lua" },
+	{ url = BASE .. "README.md",                      path = "UiLibraryImgui/README.md" },
+	{ url = BASE .. "LICENSE",                        path = "UiLibraryImgui/LICENSE" },
+	{ url = BASE .. "docs/API.md",                    path = "UiLibraryImgui/docs/API.md" },
+	{ url = BASE .. "Themes/Themes.lua",              path = "UiLibraryImgui/Themes/Themes.lua" },
+	{ url = BASE .. "Examples/Example.lua",           path = "UiLibraryImgui/Examples/Example.lua" },
+	{ url = BASE .. "SETUP_INSTRUCTIONS.md",          path = "UiLibraryImgui/SETUP_INSTRUCTIONS.md" },
 }
 
 if not (isfolder and makefolder and writefile) then
@@ -25,9 +25,9 @@ if not (isfolder and makefolder and writefile) then
 end
 
 if not isfolder("UiLibraryStyleImgui") then makefolder("UiLibraryStyleImgui") end
-if not isfolder("UiLibraryStyleImgui/docs") then makefolder("UiLibraryStyleImgui/docs") end
-if not isfolder("UiLibraryStyleImgui/Themes") then makefolder("UiLibraryStyleImgui/Themes") end
-if not isfolder("UiLibraryStyleImgui/Examples") then makefolder("UiLibraryStyleImgui/Examples") end
+if not isfolder("UiLibraryImgui/docs") then makefolder("UiLibraryImgui/docs") end
+if not isfolder("UiLibraryImgui/Themes") then makefolder("UiLibraryImgui/Themes") end
+if not isfolder("UiLibraryImgui/Examples") then makefolder("UiLibraryImgui/Examples") end
 
 local okCount, failCount = 0, 0
 for _, f in ipairs(FILES) do
@@ -47,5 +47,5 @@ end
 
 print(string.format("Setup finished: %d ok, %d failed.", okCount, failCount))
 if failCount > 0 then
-	print("Check BASE URL: did you replace YOUR_USERNAME with the real GitHub username?")
+	print("Check BASE URL: did you replace RuHit-Scripts with the real GitHub username?")
 end

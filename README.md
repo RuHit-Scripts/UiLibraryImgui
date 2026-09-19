@@ -21,7 +21,7 @@ A lightweight **IMGUI-style** Roblox UI library with a native look, built for bo
 ## Installation
 
 ```lua
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/YOUR_USERNAME/UiLibraryStyleImgui/main/Library.lua"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/RuHit-Scripts/UiLibraryImgui/main/Library.lua"))()
 ```
 
 Or copy `Library.lua` into your project and `require` it.

@@ -1,4 +1,4 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/YOUR_USERNAME/UiLibraryStyleImgui/main/Library.lua"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/RuHit-Scripts/UiLibraryImgui/main/Library.lua"))()
 
 Library:SetTheme("Ocean")
 

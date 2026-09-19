@@ -9,7 +9,7 @@ This file tells the setup AI exactly how to fetch and place every file of the `U
 ## Repository
 
 - Owner repo name: `UiLibraryStyleImgui`
-- Replace `YOUR_USERNAME` below with the actual GitHub username.
+- Replace `RuHit-Scripts` below with the actual GitHub username.
 
 ---
 
@@ -17,19 +17,19 @@ This file tells the setup AI exactly how to fetch and place every file of the `U
 
 | # | Raw URL | Destination |
 |---|---------|-------------|
-| 1 | `https://raw.githubusercontent.com/YOUR_USERNAME/UiLibraryStyleImgui/main/Library.lua` | `/UiLibraryStyleImgui/Library.lua` |
-| 2 | `https://raw.githubusercontent.com/YOUR_USERNAME/UiLibraryStyleImgui/main/README.md` | `/UiLibraryStyleImgui/README.md` |
-| 3 | `https://raw.githubusercontent.com/YOUR_USERNAME/UiLibraryStyleImgui/main/LICENSE` | `/UiLibraryStyleImgui/LICENSE` |
-| 4 | `https://raw.githubusercontent.com/YOUR_USERNAME/UiLibraryStyleImgui/main/docs/API.md` | `/UiLibraryStyleImgui/docs/API.md` |
-| 5 | `https://raw.githubusercontent.com/YOUR_USERNAME/UiLibraryStyleImgui/main/Themes/Themes.lua` | `/UiLibraryStyleImgui/Themes/Themes.lua` |
-| 6 | `https://raw.githubusercontent.com/YOUR_USERNAME/UiLibraryStyleImgui/main/Examples/Example.lua` | `/UiLibraryStyleImgui/Examples/Example.lua` |
+| 1 | `https://raw.githubusercontent.com/RuHit-Scripts/UiLibraryImgui/main/Library.lua` | `/UiLibraryImgui/Library.lua` |
+| 2 | `https://raw.githubusercontent.com/RuHit-Scripts/UiLibraryImgui/main/README.md` | `/UiLibraryImgui/README.md` |
+| 3 | `https://raw.githubusercontent.com/RuHit-Scripts/UiLibraryImgui/main/LICENSE` | `/UiLibraryImgui/LICENSE` |
+| 4 | `https://raw.githubusercontent.com/RuHit-Scripts/UiLibraryImgui/main/docs/API.md` | `/UiLibraryImgui/docs/API.md` |
+| 5 | `https://raw.githubusercontent.com/RuHit-Scripts/UiLibraryImgui/main/Themes/Themes.lua` | `/UiLibraryImgui/Themes/Themes.lua` |
+| 6 | `https://raw.githubusercontent.com/RuHit-Scripts/UiLibraryImgui/main/Examples/Example.lua` | `/UiLibraryImgui/Examples/Example.lua` |
 
 ---
 
 ## Folder structure (final result)
 
 ```
-UiLibraryStyleImgui/
+UiLibraryImgui/
 ├── Library.lua              <-- main library (required)
 ├── README.md                <-- GitHub readme
 ├── LICENSE                  <-- MIT license
@@ -54,13 +54,13 @@ UiLibraryStyleImgui/
 
 ## Replace placeholders
 
-After all files are placed, replace `YOUR_USERNAME` with the real GitHub username in these files:
+After all files are placed, replace `RuHit-Scripts` with the real GitHub username in these files:
 
-- `README.md` — line `loadstring(game:HttpGet("https://raw.githubusercontent.com/YOUR_USERNAME/..."))()`
+- `README.md` — line `loadstring(game:HttpGet("https://raw.githubusercontent.com/RuHit-Scripts/..."))()`
 - `Examples/Example.lua` — the same raw URL at the top
-- `SETUP_INSTRUCTIONS.md` — all `YOUR_USERNAME` occurrences in the File map table
+- `SETUP_INSTRUCTIONS.md` — all `RuHit-Scripts` occurrences in the File map table
 
-Search for `YOUR_USERNAME` and replace every occurrence.
+Search for `RuHit-Scripts` and replace every occurrence.
 
 ---
 
@@ -72,9 +72,9 @@ If the tool can execute Roblox Lua (has `HttpService` + `writefile`), run `setup
 
 ## Verification checklist
 
-- [ ] `UiLibraryStyleImgui/Library.lua` exists and is non-empty
-- [ ] `UiLibraryStyleImgui/Themes/Themes.lua` exists and is non-empty
-- [ ] `UiLibraryStyleImgui/docs/API.md` exists and is non-empty
-- [ ] `UiLibraryStyleImgui/Examples/Example.lua` exists and is non-empty
-- [ ] `UiLibraryStyleImgui/README.md` exists and is non-empty
-- [ ] No `YOUR_USERNAME` placeholders left (except in this file)
+- [ ] `UiLibraryImgui/Library.lua` exists and is non-empty
+- [ ] `UiLibraryImgui/Themes/Themes.lua` exists and is non-empty
+- [ ] `UiLibraryImgui/docs/API.md` exists and is non-empty
+- [ ] `UiLibraryImgui/Examples/Example.lua` exists and is non-empty
+- [ ] `UiLibraryImgui/README.md` exists and is non-empty
+- [ ] No `RuHit-Scripts` placeholders left (except in this file)
