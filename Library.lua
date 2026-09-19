@@ -15,8 +15,16 @@ local ui_options = {
 }
 
 do
-	local imgui = game:GetService("CoreGui"):FindFirstChild("imgui")
-	if imgui then imgui:Destroy() end
+	local lp2 = game:GetService("Players").LocalPlayer
+	if lp2 then
+		local pg2 = lp2:FindFirstChildOfClass("PlayerGui")
+		if pg2 then
+			local old = pg2:FindFirstChild("imgui")
+			if old then old:Destroy() end
+		end
+	end
+	local old2 = game:GetService("CoreGui"):FindFirstChild("imgui")
+	if old2 then old2:Destroy() end
 end
 
 local imgui = Instance.new("ScreenGui")
@@ -104,7 +112,11 @@ local CoreGui= cloneref(game:GetService("CoreGui"))
 
 
 imgui.Name = "imgui"
-imgui.Parent = gethui and gethui() or (CoreGui or game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+local parentGui = game:GetService("Players").LocalPlayer:FindFirstChildOfClass("PlayerGui")
+if not parentGui then
+	parentGui = gethui and gethui() or CoreGui
+end
+imgui.Parent = parentGui
 prefabs.Name = "Prefabs"
 prefabs.Parent = imgui
 prefabs.BackgroundColor3 = Color3.new(1, 1, 1)
@@ -125,6 +137,7 @@ label.TextXAlignment = Enum.TextXAlignment.Left
 window.Name = "Window"
 window.Parent = prefabs
 window.Active = true
+window.ZIndex = 1
 window.BackgroundColor3 = Color3.new(1, 1, 1)
 window.BackgroundTransparency = 0
 window.BackgroundColor3 = Color3.new(0.0823529, 0.0862745, 0.0901961)
@@ -447,6 +460,7 @@ tabButton.TextSize = SZ(14)
 
 textButtonRoundify4px_2.Name = "TextButton_Roundify_4px"
 textButtonRoundify4px_2.Parent = tabButton
+textButtonRoundify4px_2.ZIndex = 1
 textButtonRoundify4px_2.BackgroundColor3 = Color3.new(1, 1, 1)
 textButtonRoundify4px_2.BackgroundTransparency = 1
 textButtonRoundify4px_2.Size = UDim2.new(1, 0, 1, 0)
