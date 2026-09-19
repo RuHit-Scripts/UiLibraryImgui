@@ -139,14 +139,19 @@ window.Parent = prefabs
 window.Active = true
 window.ZIndex = 1
 window.BackgroundColor3 = Color3.new(1, 1, 1)
+window.BackgroundColor3 = Color3.fromRGB(32, 34, 40)
 window.BackgroundTransparency = 0
-window.BackgroundColor3 = Color3.new(0.0823529, 0.0862745, 0.0901961)
 window.ClipsDescendants = true
 do
 	local wc = Instance.new("UICorner")
 	wc.Name = "Corner"
 	wc.CornerRadius = UDim.new(0, 8)
 	wc.Parent = window
+	local ws = Instance.new("UIStroke")
+	ws.Name = "Stroke"
+	ws.Color = Color3.fromRGB(70, 80, 100)
+	ws.Thickness = 2
+	ws.Parent = window
 end
 window.Position = UDim2.new(0, 20, 0, 20)
 window.Selectable = true
@@ -944,12 +949,14 @@ function library:AddWindow(title, options)
 	local Window = prefabs:FindFirstChild("Window"):Clone()
 	Window.Parent = windowsFrame
 	Window:FindFirstChild("Title").Text = title
+	Window.AnchorPoint = Vector2.new(0.5, 0.5)
+	Window.Position = UDim2.new(0.5, 0, 0.5, 0)
 
 	-- clamp window size to screen (important on phones)
 	do
 		local viewport = workspace.CurrentCamera and workspace.CurrentCamera.ViewportSize or Vector2.new(800, 600)
-		local w = math.min(options.min_size.X, math.floor(viewport.X * 0.92))
-		local h = math.min(options.min_size.Y, math.floor(viewport.Y * 0.78))
+		local w = math.min(options.min_size.X, math.floor(viewport.X * 0.75))
+		local h = math.min(options.min_size.Y, math.floor(viewport.Y * 0.68))
 		Window.Size = UDim2.fromOffset(w, h)
 	end
 
