@@ -30,15 +30,15 @@ end
 local imgui = Instance.new("ScreenGui")
 local prefabs = Instance.new("Frame")
 local label = Instance.new("TextLabel")
-local window = Instance.new("ImageLabel")
+local window = Instance.new("Frame")
 local resizer = Instance.new("Frame")
 local bar = Instance.new("Frame")
-local toggle = Instance.new("ImageButton")
-local base = Instance.new("ImageLabel")
-local top = Instance.new("ImageLabel")
+local toggle = Instance.new("TextButton")
+local base = Instance.new("Frame")
+local top = Instance.new("Frame")
 local tabs = Instance.new("Frame")
 local titleLabel = Instance.new("TextLabel")
-local tabSelection = Instance.new("ImageLabel")
+local tabSelection = Instance.new("Frame")
 local tabButtons = Instance.new("Frame")
 local uiListLayout = Instance.new("UIListLayout")
 local frame = Instance.new("Frame")
@@ -53,32 +53,32 @@ tab.Active = true
 tab.ClipsDescendants = true
 local uiListLayout2 = Instance.new("UIListLayout")
 local textBox = Instance.new("TextBox")
-local textBoxRoundify4px = Instance.new("ImageLabel")
-local slider = Instance.new("ImageLabel")
+local textBoxRoundify4px = Instance.new("Frame")
+local slider = Instance.new("Frame")
 local sliderTitle = Instance.new("TextLabel")
-local indicator = Instance.new("ImageLabel")
+local indicator = Instance.new("Frame")
 local sliderValue = Instance.new("TextLabel")
 local textLabel = Instance.new("TextLabel")
 local textLabel2 = Instance.new("TextLabel")
-local circle = Instance.new("ImageLabel")
+local circle = Instance.new("Frame")
 local uiListLayout3 = Instance.new("UIListLayout")
 local dropdown = Instance.new("TextButton")
-local dropdownIndicator = Instance.new("ImageLabel")
-local dropdownBox = Instance.new("ImageButton")
+local dropdownIndicator = Instance.new("Frame")
+local dropdownBox = Instance.new("TextButton")
 local dropdownObjects = Instance.new("ScrollingFrame")
 local uiListLayout4 = Instance.new("UIListLayout")
-local textButtonRoundify4px = Instance.new("ImageLabel")
+local textButtonRoundify4px = Instance.new("Frame")
 local tabButton = Instance.new("TextButton")
-local textButtonRoundify4px_2 = Instance.new("ImageLabel")
-local folder = Instance.new("ImageLabel")
+local textButtonRoundify4px_2 = Instance.new("Frame")
+local folder = Instance.new("Frame")
 local button = Instance.new("TextButton")
-local textButtonRoundify4px_3 = Instance.new("ImageLabel")
-local toggle2 = Instance.new("ImageLabel")
+local textButtonRoundify4px_3 = Instance.new("Frame")
+local toggle2 = Instance.new("Frame")
 local objects2 = Instance.new("Frame")
 local uiListLayout5 = Instance.new("UIListLayout")
 local horizontalAlignment = Instance.new("Frame")
 local uiListLayout6 = Instance.new("UIListLayout")
-local console = Instance.new("ImageLabel")
+local console = Instance.new("Frame")
 local scrollingFrame = Instance.new("ScrollingFrame")
 local source = Instance.new("TextBox")
 local commentsLabel = Instance.new("TextLabel")
@@ -90,22 +90,22 @@ local tokensLabel = Instance.new("TextLabel")
 local numbersLabel = Instance.new("TextLabel")
 local infoLabel = Instance.new("TextLabel")
 local linesLabel = Instance.new("TextLabel")
-local colorPicker = Instance.new("ImageLabel")
-local palette = Instance.new("ImageLabel")
-local indicator3 = Instance.new("ImageLabel")
-local sample = Instance.new("ImageLabel")
-local saturation = Instance.new("ImageLabel")
+local colorPicker = Instance.new("Frame")
+local palette = Instance.new("Frame")
+local indicator3 = Instance.new("Frame")
+local sample = Instance.new("Frame")
+local saturation = Instance.new("Frame")
 local indicator4 = Instance.new("Frame")
 local switchButton = Instance.new("TextButton")
-local textButtonRoundify4px_4 = Instance.new("ImageLabel")
+local textButtonRoundify4px_4 = Instance.new("Frame")
 local title3Label = Instance.new("TextLabel")
 local button2 = Instance.new("TextButton")
-local textButtonRoundify4px_5 = Instance.new("ImageLabel")
+local textButtonRoundify4px_5 = Instance.new("Frame")
 local dropdownButton = Instance.new("TextButton")
-local keybind = Instance.new("ImageLabel")
+local keybind = Instance.new("Frame")
 local title4Label = Instance.new("TextLabel")
 local inputButton = Instance.new("TextButton")
-local inputRoundify4px = Instance.new("ImageLabel")
+local inputRoundify4px = Instance.new("Frame")
 local windowsFrame = Instance.new("Frame")
 local cloneref = cloneref and cloneref or function(...) return ... end
 local CoreGui= cloneref(game:GetService("CoreGui"))
@@ -142,14 +142,15 @@ window.BackgroundColor3 = Color3.new(1, 1, 1)
 window.BackgroundTransparency = 0
 window.BackgroundColor3 = Color3.new(0.0823529, 0.0862745, 0.0901961)
 window.ClipsDescendants = true
+do
+	local wc = Instance.new("UICorner")
+	wc.Name = "Corner"
+	wc.CornerRadius = UDim.new(0, 8)
+	wc.Parent = window
+end
 window.Position = UDim2.new(0, 20, 0, 20)
 window.Selectable = true
 window.Size = UDim2.new(0, 200, 0, 200)
-window.Image = "rbxassetid://2851926732"
-window.ImageColor3 = Color3.new(0.0823529, 0.0862745, 0.0901961)
-window.ImageTransparency = 0.6
-window.ScaleType = Enum.ScaleType.Slice
-window.SliceCenter = Rect.new(12, 12, 12, 12)
 
 resizer.Name = "Resizer"
 resizer.Parent = window
@@ -196,9 +197,6 @@ toggle.Position = UDim2.new(0, 5, 0, -2)
 toggle.Rotation = 0
 toggle.Size = UDim2.new(0, 20, 0, 20)
 toggle.ZIndex = 2
-toggle.Image = "rbxassetid://4731371541"
-toggle.ImageColor3 = Color3.new(1, 1, 1)
-toggle.ImageTransparency = 0
 
 base.Name = "Base"
 base.Parent = bar
@@ -207,11 +205,6 @@ base.BackgroundTransparency = 0
 base.BorderSizePixel = 0
 base.Position = UDim2.new(0, 0, 0.800000012, 0)
 base.Size = UDim2.new(1, 0, 0, 10)
-base.Image = "rbxassetid://2851926732"
-base.ImageColor3 = Color3.new(0.160784, 0.290196, 0.478431)
-base.ImageTransparency = 0.6
-base.ScaleType = Enum.ScaleType.Slice
-base.SliceCenter = Rect.new(12, 12, 12, 12)
 
 top.Name = "Top"
 top.Parent = bar
@@ -219,10 +212,6 @@ top.BackgroundColor3 = Color3.new(1, 1, 1)
 top.BackgroundTransparency = 1
 top.Position = UDim2.new(0, 0, 0, -5)
 top.Size = UDim2.new(1, 0, 0, 10)
-top.Image = "rbxassetid://2851926732"
-top.ImageColor3 = Color3.new(0.160784, 0.290196, 0.478431)
-top.ScaleType = Enum.ScaleType.Slice
-top.SliceCenter = Rect.new(12, 12, 12, 12)
 
 tabs.Name = "Tabs"
 tabs.Parent = window
@@ -250,10 +239,6 @@ tabSelection.BackgroundTransparency = 1
 tabSelection.Position = UDim2.new(0, 15, 0, 30)
 tabSelection.Size = UDim2.new(1, -30, 0, SZ(25))
 tabSelection.Visible = false
-tabSelection.Image = "rbxassetid://2851929490"
-tabSelection.ImageColor3 = Color3.new(0.145098, 0.14902, 0.156863)
-tabSelection.ScaleType = Enum.ScaleType.Slice
-tabSelection.SliceCenter = Rect.new(4, 4, 4, 4)
 
 tabButtons.Name = "TabButtons"
 tabButtons.Parent = tabSelection
@@ -299,13 +284,9 @@ textBox.TextSize = SZ(14)
 
 textBoxRoundify4px.Name = "TextBox_Roundify_4px"
 textBoxRoundify4px.Parent = textBox
-textBoxRoundify4px.BackgroundColor3 = Color3.new(1, 1, 1)
-textBoxRoundify4px.BackgroundTransparency = 1
+textBoxRoundify4px.BackgroundColor3 = Color3.new(0.0862745, 0.0901961, 0.105882)
+textBoxRoundify4px.BackgroundTransparency = 0.85
 textBoxRoundify4px.Size = UDim2.new(1, 0, 1, 0)
-textBoxRoundify4px.Image = "rbxassetid://2851929490"
-textBoxRoundify4px.ImageColor3 = Color3.new(0.203922, 0.207843, 0.219608)
-textBoxRoundify4px.ScaleType = Enum.ScaleType.Slice
-textBoxRoundify4px.SliceCenter = Rect.new(4, 4, 4, 4)
 
 slider.Name = "Slider"
 slider.Parent = prefabs
@@ -313,10 +294,6 @@ slider.BackgroundColor3 = Color3.new(0.145098, 0.14902, 0.156863)
 slider.BackgroundTransparency = 0
 slider.Position = UDim2.new(0, 0, 0.178571433, 0)
 slider.Size = UDim2.new(1, 0, 0, SZ(26))
-slider.Image = "rbxassetid://2851929490"
-slider.ImageColor3 = Color3.new(0.145098, 0.14902, 0.156863)
-slider.ScaleType = Enum.ScaleType.Slice
-slider.SliceCenter = Rect.new(4, 4, 4, 4)
 
 sliderTitle.Name = "Title"
 sliderTitle.Parent = slider
@@ -335,11 +312,6 @@ indicator.Parent = slider
 indicator.BackgroundColor3 = Color3.new(0.254902, 0.262745, 0.278431)
 indicator.BackgroundTransparency = 0
 indicator.Size = UDim2.new(0, 0, 1, 0)
-indicator.Image = "rbxassetid://2851929490"
-indicator.ImageColor3 = Color3.new(0.254902, 0.262745, 0.278431)
-indicator.ImageTransparency = 0.5
-indicator.ScaleType = Enum.ScaleType.Slice
-indicator.SliceCenter = Rect.new(4, 4, 4, 4)
 
 sliderValue.Name = "Value"
 sliderValue.Parent = slider
@@ -376,8 +348,6 @@ circle.Name = "Circle"
 circle.Parent = prefabs
 circle.BackgroundColor3 = Color3.new(1, 1, 1)
 circle.BackgroundTransparency = 1
-circle.Image = "rbxassetid://266543268"
-circle.ImageTransparency = 0.5
 
 uiListLayout3.Parent = prefabs
 uiListLayout3.FillDirection = Enum.FillDirection.Horizontal
@@ -406,7 +376,6 @@ dropdownIndicator.Position = UDim2.new(0.899999976, -10, 0.100000001, 0)
 dropdownIndicator.Rotation = -90
 dropdownIndicator.Size = UDim2.new(0, 15, 0, 15)
 dropdownIndicator.ZIndex = 2
-dropdownIndicator.Image = "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=4744658743"
 
 dropdownBox.Name = "Box"
 dropdownBox.Parent = dropdown
@@ -415,10 +384,6 @@ dropdownBox.BackgroundTransparency = 1
 dropdownBox.Position = UDim2.new(0, 0, 0, SZ(25))
 dropdownBox.Size = UDim2.new(1, 0, 0, 150)
 dropdownBox.ZIndex = 3
-dropdownBox.Image = "rbxassetid://2851929490"
-dropdownBox.ImageColor3 = Color3.new(0.129412, 0.133333, 0.141176)
-dropdownBox.ScaleType = Enum.ScaleType.Slice
-dropdownBox.SliceCenter = Rect.new(4, 4, 4, 4)
 
 dropdownObjects.Name = "Objects"
 dropdownObjects.Parent = dropdownBox
@@ -435,13 +400,9 @@ uiListLayout4.SortOrder = Enum.SortOrder.LayoutOrder
 
 textButtonRoundify4px.Name = "TextButton_Roundify_4px"
 textButtonRoundify4px.Parent = dropdown
-textButtonRoundify4px.BackgroundColor3 = Color3.new(1, 1, 1)
-textButtonRoundify4px.BackgroundTransparency = 1
+textButtonRoundify4px.BackgroundColor3 = Color3.new(0.0862745, 0.0901961, 0.105882)
+textButtonRoundify4px.BackgroundTransparency = 0.85
 textButtonRoundify4px.Size = UDim2.new(1, 0, 1, 0)
-textButtonRoundify4px.Image = "rbxassetid://2851929490"
-textButtonRoundify4px.ImageColor3 = Color3.new(0.203922, 0.207843, 0.219608)
-textButtonRoundify4px.ScaleType = Enum.ScaleType.Slice
-textButtonRoundify4px.SliceCenter = Rect.new(4, 4, 4, 4)
 
 tabButton.Name = "TabButton"
 tabButton.Parent = prefabs
@@ -459,13 +420,9 @@ tabButton.TextSize = SZ(14)
 textButtonRoundify4px_2.Name = "TextButton_Roundify_4px"
 textButtonRoundify4px_2.Parent = tabButton
 textButtonRoundify4px_2.ZIndex = 1
-textButtonRoundify4px_2.BackgroundColor3 = Color3.new(1, 1, 1)
-textButtonRoundify4px_2.BackgroundTransparency = 1
+textButtonRoundify4px_2.BackgroundColor3 = Color3.new(0.0862745, 0.0901961, 0.105882)
+textButtonRoundify4px_2.BackgroundTransparency = 0.85
 textButtonRoundify4px_2.Size = UDim2.new(1, 0, 1, 0)
-textButtonRoundify4px_2.Image = "rbxassetid://2851929490"
-textButtonRoundify4px_2.ImageColor3 = Color3.new(0.203922, 0.207843, 0.219608)
-textButtonRoundify4px_2.ScaleType = Enum.ScaleType.Slice
-textButtonRoundify4px_2.SliceCenter = Rect.new(4, 4, 4, 4)
 
 folder.Name = "Folder"
 folder.Parent = prefabs
@@ -473,10 +430,6 @@ folder.BackgroundColor3 = Color3.new(1, 1, 1)
 folder.BackgroundTransparency = 1
 folder.Position = UDim2.new(0, 0, 0, 50)
 folder.Size = UDim2.new(1, 0, 0, SZ(24))
-folder.Image = "rbxassetid://2851929490"
-folder.ImageColor3 = Color3.new(0.0823529, 0.0862745, 0.0901961)
-folder.ScaleType = Enum.ScaleType.Slice
-folder.SliceCenter = Rect.new(4, 4, 4, 4)
 
 button.Name = "Button"
 button.Parent = folder
@@ -493,13 +446,9 @@ button.TextXAlignment = Enum.TextXAlignment.Left
 
 textButtonRoundify4px_3.Name = "TextButton_Roundify_4px"
 textButtonRoundify4px_3.Parent = button
-textButtonRoundify4px_3.BackgroundColor3 = Color3.new(1, 1, 1)
-textButtonRoundify4px_3.BackgroundTransparency = 1
+textButtonRoundify4px_3.BackgroundColor3 = Color3.new(0.0862745, 0.0901961, 0.105882)
+textButtonRoundify4px_3.BackgroundTransparency = 0.85
 textButtonRoundify4px_3.Size = UDim2.new(1, 0, 1, 0)
-textButtonRoundify4px_3.Image = "rbxassetid://2851929490"
-textButtonRoundify4px_3.ImageColor3 = Color3.new(0.160784, 0.290196, 0.478431)
-textButtonRoundify4px_3.ScaleType = Enum.ScaleType.Slice
-textButtonRoundify4px_3.SliceCenter = Rect.new(4, 4, 4, 4)
 
 toggle2.Name = "Toggle"
 toggle2.Parent = button
@@ -507,7 +456,6 @@ toggle2.BackgroundColor3 = Color3.new(1, 1, 1)
 toggle2.BackgroundTransparency = 1
 toggle2.Position = UDim2.new(0, 5, 0, 0)
 toggle2.Size = UDim2.new(0, SZ(20), 0, SZ(20))
-toggle2.Image = "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=4731371541"
 
 objects2.Name = "Objects"
 objects2.Parent = folder
@@ -537,10 +485,6 @@ console.Parent = prefabs
 console.BackgroundColor3 = Color3.new(1, 1, 1)
 console.BackgroundTransparency = 1
 console.Size = UDim2.new(1, 0, 0, 200)
-console.Image = "rbxassetid://2851928141"
-console.ImageColor3 = Color3.new(0.129412, 0.133333, 0.141176)
-console.ScaleType = Enum.ScaleType.Slice
-console.SliceCenter = Rect.new(8, 8, 8, 8)
 
 scrollingFrame.Parent = console
 scrollingFrame.BackgroundColor3 = Color3.new(1, 1, 1)
@@ -692,10 +636,6 @@ colorPicker.Parent = prefabs
 colorPicker.BackgroundColor3 = Color3.new(1, 1, 1)
 colorPicker.BackgroundTransparency = 1
 colorPicker.Size = UDim2.new(0, 180, 0, 110)
-colorPicker.Image = "rbxassetid://2851929490"
-colorPicker.ImageColor3 = Color3.new(0.203922, 0.207843, 0.219608)
-colorPicker.ScaleType = Enum.ScaleType.Slice
-colorPicker.SliceCenter = Rect.new(4, 4, 4, 4)
 
 palette.Name = "Palette"
 palette.Parent = colorPicker
@@ -703,9 +643,6 @@ palette.BackgroundColor3 = Color3.new(1, 1, 1)
 palette.BackgroundTransparency = 1
 palette.Position = UDim2.new(0.0500000007, 0, 0.0500000007, 0)
 palette.Size = UDim2.new(0, 100, 0, 100)
-palette.Image = "rbxassetid://698052001"
-palette.ScaleType = Enum.ScaleType.Slice
-palette.SliceCenter = Rect.new(4, 4, 4, 4)
 
 indicator3.Name = "Indicator"
 indicator3.Parent = palette
@@ -713,10 +650,6 @@ indicator3.BackgroundColor3 = Color3.new(1, 1, 1)
 indicator3.BackgroundTransparency = 1
 indicator3.Size = UDim2.new(0, 5, 0, 5)
 indicator3.ZIndex = 2
-indicator3.Image = "rbxassetid://2851926732"
-indicator3.ImageColor3 = Color3.new(0, 0, 0)
-indicator3.ScaleType = Enum.ScaleType.Slice
-indicator3.SliceCenter = Rect.new(12, 12, 12, 12)
 
 sample.Name = "Sample"
 sample.Parent = colorPicker
@@ -724,16 +657,12 @@ sample.BackgroundColor3 = Color3.new(1, 1, 1)
 sample.BackgroundTransparency = 1
 sample.Position = UDim2.new(0.800000012, 0, 0.0500000007, 0)
 sample.Size = UDim2.new(0, 25, 0, 25)
-sample.Image = "rbxassetid://2851929490"
-sample.ScaleType = Enum.ScaleType.Slice
-sample.SliceCenter = Rect.new(4, 4, 4, 4)
 
 saturation.Name = "Saturation"
 saturation.Parent = colorPicker
 saturation.BackgroundColor3 = Color3.new(1, 1, 1)
 saturation.Position = UDim2.new(0.649999976, 0, 0.0500000007, 0)
 saturation.Size = UDim2.new(0, 15, 0, 100)
-saturation.Image = "rbxassetid://3641079629"
 
 indicator4.Name = "Indicator"
 indicator4.Parent = saturation
@@ -757,14 +686,9 @@ switchButton.TextSize = 18
 
 textButtonRoundify4px_4.Name = "TextButton_Roundify_4px"
 textButtonRoundify4px_4.Parent = switchButton
-textButtonRoundify4px_4.BackgroundColor3 = Color3.new(1, 1, 1)
-textButtonRoundify4px_4.BackgroundTransparency = 1
+textButtonRoundify4px_4.BackgroundColor3 = Color3.new(0.0862745, 0.0901961, 0.105882)
+textButtonRoundify4px_4.BackgroundTransparency = 0.85
 textButtonRoundify4px_4.Size = UDim2.new(1, 0, 1, 0)
-textButtonRoundify4px_4.Image = "rbxassetid://2851929490"
-textButtonRoundify4px_4.ImageColor3 = Color3.new(0.160784, 0.290196, 0.478431)
-textButtonRoundify4px_4.ImageTransparency = 0.5
-textButtonRoundify4px_4.ScaleType = Enum.ScaleType.Slice
-textButtonRoundify4px_4.SliceCenter = Rect.new(4, 4, 4, 4)
 
 title3Label.Name = "Title"
 title3Label.Parent = switchButton
@@ -791,13 +715,9 @@ button2.TextSize = 14
 
 textButtonRoundify4px_5.Name = "TextButton_Roundify_4px"
 textButtonRoundify4px_5.Parent = button2
-textButtonRoundify4px_5.BackgroundColor3 = Color3.new(1, 1, 1)
-textButtonRoundify4px_5.BackgroundTransparency = 1
+textButtonRoundify4px_5.BackgroundColor3 = Color3.new(0.0862745, 0.0901961, 0.105882)
+textButtonRoundify4px_5.BackgroundTransparency = 0.85
 textButtonRoundify4px_5.Size = UDim2.new(1, 0, 1, 0)
-textButtonRoundify4px_5.Image = "rbxassetid://2851929490"
-textButtonRoundify4px_5.ImageColor3 = Color3.new(0.160784, 0.290196, 0.478431)
-textButtonRoundify4px_5.ScaleType = Enum.ScaleType.Slice
-textButtonRoundify4px_5.SliceCenter = Rect.new(4, 4, 4, 4)
 
 dropdownButton.Name = "DropdownButton"
 dropdownButton.Parent = prefabs
@@ -816,10 +736,6 @@ keybind.Parent = prefabs
 keybind.BackgroundColor3 = Color3.new(1, 1, 1)
 keybind.BackgroundTransparency = 1
 keybind.Size = UDim2.new(0, 200, 0, 20)
-keybind.Image = "rbxassetid://2851929490"
-keybind.ImageColor3 = Color3.new(0.203922, 0.207843, 0.219608)
-keybind.ScaleType = Enum.ScaleType.Slice
-keybind.SliceCenter = Rect.new(4, 4, 4, 4)
 
 title4Label.Name = "Title"
 title4Label.Parent = keybind
@@ -851,10 +767,6 @@ inputRoundify4px.Parent = inputButton
 inputRoundify4px.BackgroundColor3 = Color3.new(1, 1, 1)
 inputRoundify4px.BackgroundTransparency = 1
 inputRoundify4px.Size = UDim2.new(1, 0, 1, 0)
-inputRoundify4px.Image = "rbxassetid://2851929490"
-inputRoundify4px.ImageColor3 = Color3.new(0.290196, 0.294118, 0.313726)
-inputRoundify4px.ScaleType = Enum.ScaleType.Slice
-inputRoundify4px.SliceCenter = Rect.new(4, 4, 4, 4)
 
 windowsFrame.Name = "Windows"
 windowsFrame.Parent = imgui
@@ -2180,7 +2092,7 @@ function library:SetTheme(name)
 		task.spawn(function()
 			task.wait(0.1)
 			for _, w in ipairs(windowsFrame:GetChildren()) do
-				if w:IsA("ImageLabel") then
+				if w:IsA("Frame") then
 					pcall(function() w.ImageColor3 = t.bg end)
 				end
 			end
