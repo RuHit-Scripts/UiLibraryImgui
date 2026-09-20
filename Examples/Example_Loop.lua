@@ -28,7 +28,6 @@ if not Library then
 	return
 end
 
-Library:SetTheme("Mint")
 
 local Window, WindowObj = Library:AddWindow("Loop Example", {
 	main_color = Color3.fromRGB(0, 180, 140),

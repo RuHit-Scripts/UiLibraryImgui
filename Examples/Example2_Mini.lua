@@ -1,6 +1,5 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/RuHit-Scripts/UiLibraryImgui/main/Library.lua"))()
 
-Library:SetTheme("Ocean")
 
 local Window, WindowObj = Library:AddWindow("Test Mini", {
 	main_color = Color3.fromRGB(41, 74, 122),
