@@ -8,7 +8,6 @@ IMGUI-style Roblox UI library for mobile and desktop.
 
 - IMGUI-style, flat, native, minimal window layout
 - Mobile optimized — sliders, color pickers and drag interactions work with touch
-- Themes — switchable color schemes (Ocean, Night, Candy, Mint, Light)
 - Resizable and draggable windows
 - Window tabs, buttons, switches, sliders, text boxes, keybinds, dropdowns, color pickers, folders, consoles
 - Floating mobile toggle button of the menu
@@ -135,9 +134,6 @@ Creates a new window.
 | `toggle_key` | `Enum.KeyCode` | `RightShift` | Window toggle key |
 | `can_resize` | `boolean` | `true` | Allow resizing |
 | `mobile_toggle_button` | `boolean` | `true` | Show floating UI button on mobile |
-
-### `Library:SetTheme(name)`
-Applies a theme by name. Built-in: `Ocean`, `Night`, `Candy`, `Mint`, `Light`.
 
 ### `Library:FormatWindows()`
 Re-layouts all windows after creating.

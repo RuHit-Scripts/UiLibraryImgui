@@ -2,7 +2,6 @@
 
 IMGUI-style Roblox UI library for mobile and desktop.
 
-- Example: `Examples/Example.lua`
 - Docs: [docs/API.md](docs/API.md)
 - Library: `Library.lua`
 
