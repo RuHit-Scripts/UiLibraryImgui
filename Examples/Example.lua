@@ -1,25 +1,23 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/RuHit-Scripts/UiLibraryImgui/main/Library.lua"))()
 
-Library:SetTheme("Ocean")
-
 local Window, WindowObj = Library:AddWindow("Example", {
 	main_color = Color3.fromRGB(41, 74, 122),
 	min_size = Vector2.new(320, 240),
 	can_resize = true,
 })
 
-local Main, MainTab = Window:AddTab("Main")
-local Combat, CombatTab = Window:AddTab("Combat")
-local Misc, MiscTab = Window:AddTab("Misc")
+local Main = Window:AddTab("Main")
+local Combat = Window:AddTab("Combat")
+local Misc = Window:AddTab("Misc")
 
-Main:AddLabel("IMGUI-style UI library")
-Main:AddLabel("optimized for mobile & desktop")
+Main:AddLabel("IMGUI UI library")
+Main:AddLabel("mobile + desktop")
 
 Main:AddButton("Click me", function()
 	print("Button clicked!")
 end)
 
-Main:AddTextBox("Type something...", function(text)
+Main:AddTextBox("Type...", function(text)
 	print("Input:", text)
 end, { clear = true })
 
