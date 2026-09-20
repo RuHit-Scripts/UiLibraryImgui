@@ -352,7 +352,7 @@ textLabel2.TextSize = 14
 circle.Name = "Circle"
 circle.Parent = prefabs
 circle.BackgroundColor3 = Color3.new(1, 1, 1)
-circle.BackgroundTransparency = 1
+circle.BackgroundTransparency = 0.3
 
 uiListLayout3.Parent = prefabs
 uiListLayout3.FillDirection = Enum.FillDirection.Horizontal
@@ -907,7 +907,7 @@ local function ripple(button, x, y)
 		end
 
 		circle:TweenSizeAndPosition(UDim2.new(0, size, 0, size), UDim2.new(0.5, -size / 2, 0.5, -size / 2), "Out", "Quad", 0.5, false, nil)
-		Resize(circle, {ImageTransparency = 1}, 0.5)
+		Resize(circle, {BackgroundTransparency = 1}, 0.5)
 
 		wait(0.5)
 		circle:Destroy()
@@ -974,8 +974,8 @@ function library:AddWindow(title, options)
 			while true do
 				Bar.BackgroundColor3 = options.main_color
 				Base.BackgroundColor3 = options.main_color
-				Base.ImageColor3 = options.main_color
-				Top.ImageColor3 = options.main_color
+				Base.BackgroundColor3 = options.main_color
+				Top.BackgroundColor3 = options.main_color
 				SplitFrame.BackgroundColor3 = options.main_color
 
 				RS.Heartbeat:Wait()
@@ -1150,7 +1150,7 @@ function library:AddWindow(title, options)
 					if dropdown_open then return end
 					for i, v in pairs(tab_buttons:GetChildren()) do
 						if not (v:IsA("UIListLayout")) then
-							v:GetChildren()[1].ImageColor3 = Color3.fromRGB(52, 53, 56)
+							v:GetChildren()[1].BackgroundColor3 = Color3.fromRGB(52, 53, 56)
 							Resize(v, {Size = UDim2.new(0, v.AbsoluteSize.X, 0, SZ(24))}, options.tween_time)
 						end
 					end
@@ -1159,7 +1159,7 @@ function library:AddWindow(title, options)
 					end
 
 					Resize(new_button, {Size = UDim2.new(0, new_button.AbsoluteSize.X, 0, SZ(28))}, options.tween_time)
-					new_button:GetChildren()[1].ImageColor3 = Color3.fromRGB(73, 75, 79)
+					new_button:GetChildren()[1].BackgroundColor3 = Color3.fromRGB(73, 75, 79)
 					new_tab.Visible = true
 				end
 
@@ -1201,7 +1201,7 @@ function library:AddWindow(title, options)
 						spawn(function()
 							while true do
 								if button and button:GetChildren()[1] then
-									button:GetChildren()[1].ImageColor3 = options.main_color
+									button:GetChildren()[1].BackgroundColor3 = options.main_color
 								end
 								RS.Heartbeat:Wait()
 							end
@@ -1233,7 +1233,7 @@ function library:AddWindow(title, options)
 						spawn(function()
 							while true do
 								if switch and switch:GetChildren()[1] then
-									switch:GetChildren()[1].ImageColor3 = options.main_color
+									switch:GetChildren()[1].BackgroundColor3 = options.main_color
 								end
 								RS.Heartbeat:Wait()
 							end
@@ -1547,15 +1547,15 @@ local object = prefabs:FindFirstChild("DropdownButton"):Clone()
 
 							local function update()
 								local color = Color3.fromHSV(h, s, v)
-								sample.ImageColor3 = color
-								saturation.ImageColor3 = Color3.fromHSV(h, 1, 1)
+								sample.BackgroundColor3 = color
+								saturation.BackgroundColor3 = Color3.fromHSV(h, 1, 1)
 								pcall(callback, color)
 							end
 
 							do
 								local color = Color3.fromHSV(h, s, v)
-								sample.ImageColor3 = color
-								saturation.ImageColor3 = Color3.fromHSV(h, 1, 1)
+								sample.BackgroundColor3 = color
+								saturation.BackgroundColor3 = Color3.fromHSV(h, 1, 1)
  							end
 
  							local palette_indicator = palette:FindFirstChild("Indicator")
@@ -1616,8 +1616,8 @@ local object = prefabs:FindFirstChild("DropdownButton"):Clone()
 							function color_picker_data:Set(color)
 								color = typeof(color) == "Color3" and color or Color3.new(1, 1, 1)
 								local h2, s2, v2 = rgbtohsv(color.r * 255, color.g * 255, color.b * 255)
-								sample.ImageColor3 = color
-								saturation.ImageColor3 = Color3.fromHSV(h2, 1, 1)
+								sample.BackgroundColor3 = color
+								saturation.BackgroundColor3 = Color3.fromHSV(h2, 1, 1)
 								pcall(callback, color)
 							end
 						end
@@ -1977,7 +1977,7 @@ local object = prefabs:FindFirstChild("DropdownButton"):Clone()
 						spawn(function()
 							while true do
 								if button and button:GetChildren()[1] then
-									button:GetChildren()[1].ImageColor3 = options.main_color
+									button:GetChildren()[1].BackgroundColor3 = options.main_color
 								end
 								RS.Heartbeat:Wait()
 							end
@@ -2100,7 +2100,7 @@ function library:SetTheme(name)
 			task.wait(0.1)
 			for _, w in ipairs(windowsFrame:GetChildren()) do
 				if w:IsA("Frame") then
-					pcall(function() w.ImageColor3 = t.bg end)
+					pcall(function() w.BackgroundColor3 = t.bg end)
 				end
 			end
 		end)
