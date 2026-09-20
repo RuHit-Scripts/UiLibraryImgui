@@ -38,7 +38,7 @@ local tabSelection = Instance.new("ImageLabel")
 local tabButtons = Instance.new("Frame")
 local uiListLayout = Instance.new("UIListLayout")
 local frame = Instance.new("Frame")
-local tab = Instance.new("Frame")
+local tab = Instance.new("ScrollingFrame")
 local uiListLayout2 = Instance.new("UIListLayout")
 local textBox = Instance.new("TextBox")
 local textBoxRoundify4px = Instance.new("ImageLabel")
@@ -233,8 +233,14 @@ tab.Name = "Tab"
 tab.Parent = prefabs
 tab.BackgroundColor3 = Color3.new(1, 1, 1)
 tab.BackgroundTransparency = 1
+tab.BorderSizePixel = 0
 tab.Size = UDim2.new(1, 0, 1, 0)
 tab.Visible = false
+tab.CanvasSize = UDim2.new(0, 0, 0, 0)
+tab.AutomaticCanvasSize = Enum.AutomaticSize.Y
+tab.ScrollBarThickness = 4
+tab.ScrollBarImageColor3 = Color3.fromRGB(120, 120, 120)
+tab.ClipsDescendants = true
 
 uiListLayout2.Parent = tab
 uiListLayout2.SortOrder = Enum.SortOrder.LayoutOrder
@@ -844,9 +850,12 @@ if ui_options.mobile_toggle_button then
 
 	-- Перетаскивание кнопки для мобилок
 	local draggingMB, dragStartMB, startPosMB
+	local hasMovedMB = false
+
 	mobileButton.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 			draggingMB = true
+			hasMovedMB = false
 			dragStartMB = input.Position
 			startPosMB = mobileButton.Position
 		end
@@ -855,6 +864,9 @@ if ui_options.mobile_toggle_button then
 	UIS.InputChanged:Connect(function(input)
 		if draggingMB and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
 			local delta = input.Position - dragStartMB
+			if delta.Magnitude > 5 then
+				hasMovedMB = true
+			end
 			mobileButton.Position = UDim2.new(
 				startPosMB.X.Scale,
 				startPosMB.X.Offset + delta.X,
@@ -871,7 +883,9 @@ if ui_options.mobile_toggle_button then
 	end)
 
 	mobileButton.MouseButton1Click:Connect(function()
-		imgui.Enabled = not imgui.Enabled
+		if not hasMovedMB then
+			windowsFrame.Visible = not windowsFrame.Visible
+		end
 	end)
 end
 
@@ -885,7 +899,7 @@ local checks = {
 UIS.InputBegan:Connect(function(input, gameProcessed)
 	if input.KeyCode == ((typeof(ui_options.toggle_key) == "EnumItem") and ui_options.toggle_key or Enum.KeyCode.RightShift) then
 		if root and not checks.binding then
-			root.Enabled = not root.Enabled
+			windowsFrame.Visible = not windowsFrame.Visible
 		end
 	end
 end)
@@ -1164,6 +1178,14 @@ function library:AddWindow(title, options)
 			local new_tab = prefabs:FindFirstChild("Tab"):Clone()
 			new_tab.Parent = tabs
 			new_tab.ZIndex = new_tab.ZIndex + (windows * 10)
+
+			-- Подключение динамического размера Canvas для скролла при добавлении элементов
+			local layout = new_tab:FindFirstChildOfClass("UIListLayout")
+			if layout then
+				layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+					new_tab.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
+				end)
+			end
 
 			local function show()
 				if dropdown_open then return end
