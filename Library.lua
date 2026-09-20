@@ -1,89 +1,49 @@
--- STREAMING_CHUNK:Initializing Services and Core Library Structure...
-local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
 ​local LocalPlayer = Players.LocalPlayer
-local Mouse = LocalPlayer and LocalPlayer:GetMouse()
 ​local Library = {
+Elements = {},
 Options = {},
 Toggles = {},
-Elements = {},
-Notifications = {},
-NotifySide = "Right", -- "Left" or "Right"
-DPIScale = 1,
 Theme = {
 MainColor = Color3.fromRGB(41, 74, 122),
-BackgroundColor = Color3.fromRGB(24, 24, 28),
-HeaderColor = Color3.fromRGB(32, 32, 38),
-GroupColor = Color3.fromRGB(28, 28, 34),
-TextColor = Color3.fromRGB(230, 230, 235),
-SubTextColor = Color3.fromRGB(150, 150, 160),
+HeaderColor = Color3.fromRGB(30, 30, 40),
+BackgroundColor = Color3.fromRGB(20, 20, 25),
+GroupColor = Color3.fromRGB(28, 28, 35),
+TextColor = Color3.fromRGB(240, 240, 240),
+SubTextColor = Color3.fromRGB(160, 160, 170),
+AccentColor = Color3.fromRGB(50, 120, 220),
 BorderColor = Color3.fromRGB(50, 50, 60),
-AccentColor = Color3.fromRGB(60, 115, 190),
-ActiveColor = Color3.fromRGB(80, 140, 230),
 DividerColor = Color3.fromRGB(45, 45, 55)
+},
+NotifySide = "Right",
+DPIScale = 1,
+Windows = {}
 }
-}
-​-- STREAMING_CHUNK:Creating Screen Container and DPI Scaler...
-local ParentContainer
-pcall(function()
-if gethui then
-ParentContainer = gethui()
-elseif syn and syn.protect_gui then
-local sg = Instance.new("ScreenGui")
-syn.protect_gui(sg)
-sg.Parent = CoreGui
-ParentContainer = sg
-else
-ParentContainer = CoreGui
+​-- Target Container Setup
+local TargetGui = CoreGui
+if not pcall(function() local _ = CoreGui.Name end) then
+TargetGui = LocalPlayer:WaitForChild("PlayerGui")
 end
-end)
-​if not ParentContainer then
-ParentContainer = LocalPlayer:WaitForChild("PlayerGui")
-end
-​local GuiScreen = Instance.new("ScreenGui")
-GuiScreen.Name = "RuHit_ImGui_Enhanced"
-GuiScreen.ResetOnSpawn = false
-GuiScreen.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-GuiScreen.Parent = ParentContainer
-​local ToastContainer = Instance.new("Frame")
-ToastContainer.Name = "ToastContainer"
-ToastContainer.Size = UDim2.new(0, 300, 1, -20)
-ToastContainer.Position = UDim2.new(1, -310, 0, 10)
-ToastContainer.BackgroundTransparency = 1
-ToastContainer.ZIndex = 999999
-ToastContainer.Parent = GuiScreen
-​local ToastListLayout = Instance.new("UIListLayout")
-ToastListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-ToastListLayout.Padding = UDim.new(0, 8)
-ToastListLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
-ToastListLayout.Parent = ToastContainer
-​-- STREAMING_CHUNK:Implementing Library Global Configuration Methods...
-function Library:SetNotifySide(side)
-side = string.lower(tostring(side))
-if side == "left" then
-Library.NotifySide = "Left"
-ToastContainer.Position = UDim2.new(0, 10, 0, 10)
-else
-Library.NotifySide = "Right"
-ToastContainer.Position = UDim2.new(1, -310, 0, 10)
-end
-end
-​function Library:SetDPIScale(scale)
-Library.DPIScale = math.clamp(tonumber(scale) or 1, 0.5, 2.5)
-for , child in ipairs(GuiScreen:GetChildren()) do
-if child:IsA("Frame") and child.Name:find("Window") then
-local originalSize = child:GetAttribute("BaseSize") or child.Size
-child.Size = UDim2.new(0, originalSize.X.Offset * Library.DPIScale, 0, originalSize.Y.Offset * Library.DPIScale)
-end
-end
-end
-​function Library:GetElement(id)
-return Library.Elements[id] or Library.Options[id] or Library.Toggles[id]
-end
-​-- STREAMING_CHUNK:Implementing Element Registration and Proxy Wrapper...
+​local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "RuHit_UiLibrary_" .. tostring(math.random(100000, 999999))
+ScreenGui.ResetOnSpawn = false
+ScreenGui.DisplayOrder = 100
+ScreenGui.Parent = TargetGui
+​local NotifyHolder = Instance.new("Frame")
+NotifyHolder.Name = "NotifyHolder"
+NotifyHolder.Size = UDim2.new(0, 280, 1, -20)
+NotifyHolder.Position = UDim2.new(1, -290, 0, 10)
+NotifyHolder.BackgroundTransparency = 1
+NotifyHolder.Parent = ScreenGui
+​local NotifyLayout = Instance.new("UIListLayout")
+NotifyLayout.SortOrder = Enum.SortOrder.LayoutOrder
+NotifyLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+NotifyLayout.Padding = UDim.new(0, 6)
+NotifyLayout.Parent = NotifyHolder
+​-- Safe Element Registration Logic (Fixes infinite recursion)
 local function RegisterElement(id, elementObj, isToggle)
 if not id or type(id) ~= "string" or id == "" then return end
 ​Library.Elements[id] = elementObj
@@ -91,20 +51,23 @@ Library.Options[id] = elementObj
 if isToggle then
 Library.Toggles[id] = elementObj
 end
-​-- Support .Value reading and writing directly
-setmetatable(elementObj, {
+​setmetatable(elementObj, {
 __index = function(tbl, key)
 if key == "Value" then
+if rawget(tbl, "Get") then
 return tbl:Get()
+end
 end
 return rawget(tbl, key)
 end,
 __newindex = function(tbl, key, val)
 if key == "Value" then
-if tbl.SetValue then
+if rawget(tbl, "SetValue") then
 tbl:SetValue(val)
-elseif tbl.Set then
+elseif rawget(tbl, "Set") then
 tbl:Set(val)
+else
+rawset(tbl, "Value", val)
 end
 else
 rawset(tbl, key, val)
@@ -112,73 +75,92 @@ end
 end
 })
 end
-​-- STREAMING_CHUNK:Implementing Notification System (Notify Toast)...
-function Library:Notify(config)
-config = config or {}
-local title = config.Title or "Notification"
-local description = config.Description or ""
-local duration = config.Time or config.Duration or 4
-​local Toast = Instance.new("Frame")
-Toast.Size = UDim2.new(1, 0, 0, 60)
-Toast.BackgroundColor3 = Library.Theme.HeaderColor
-Toast.BorderSizePixel = 0
-Toast.ClipsDescendants = true
-Toast.Parent = ToastContainer
+​-- Global Library API
+function Library:GetElement(id)
+return Library.Elements[id] or Library.Options[id] or Library.Toggles[id]
+end
+​function Library:SetNotifySide(side)
+side = tostring(side):sub(1, 1):upper() .. tostring(side):sub(2):lower()
+if side == "Left" then
+Library.NotifySide = "Left"
+NotifyHolder.Position = UDim2.new(0, 10, 0, 10)
+else
+Library.NotifySide = "Right"
+NotifyHolder.Position = UDim2.new(1, -290, 0, 10)
+end
+end
+​function Library:Notify(opts)
+opts = type(opts) == "table" and opts or { Title = "Notification", Description = tostring(opts) }
+local title = opts.Title or opts.title or "Notice"
+local desc = opts.Description or opts.description or opts.Text or ""
+local duration = opts.Time or opts.time or opts.Duration or 4
+​local Card = Instance.new("Frame")
+Card.Size = UDim2.new(1, 0, 0, 0)
+Card.BackgroundColor3 = Library.Theme.HeaderColor
+Card.BorderSizePixel = 0
+Card.ClipsDescendants = true
+Card.Parent = NotifyHolder
 ​local Corner = Instance.new("UICorner")
 Corner.CornerRadius = UDim.new(0, 6)
-Corner.Parent = Toast
+Corner.Parent = Card
 ​local Stroke = Instance.new("UIStroke")
-Stroke.Color = Library.Theme.AccentColor
+Stroke.Color = Library.Theme.BorderColor
 Stroke.Thickness = 1
-Stroke.Parent = Toast
+Stroke.Parent = Card
 ​local TitleLbl = Instance.new("TextLabel")
-TitleLbl.Size = UDim2.new(1, -20, 0, 22)
-TitleLbl.Position = UDim2.new(0, 10, 0, 6)
+TitleLbl.Size = UDim2.new(1, -16, 0, 20)
+TitleLbl.Position = UDim2.new(0, 8, 0, 6)
 TitleLbl.BackgroundTransparency = 1
 TitleLbl.Font = Enum.Font.SourceSansBold
-TitleLbl.TextSize = 15
-TitleLbl.TextColor3 = Library.Theme.TextColor
+TitleLbl.TextSize = 14
+TitleLbl.TextColor3 = Library.Theme.AccentColor
 TitleLbl.TextXAlignment = Enum.TextXAlignment.Left
 TitleLbl.Text = title
-TitleLbl.Parent = Toast
+TitleLbl.Parent = Card
 ​local DescLbl = Instance.new("TextLabel")
-DescLbl.Size = UDim2.new(1, -20, 0, 28)
-DescLbl.Position = UDim2.new(0, 10, 0, 26)
+DescLbl.Size = UDim2.new(1, -16, 0, 0)
+DescLbl.Position = UDim2.new(0, 8, 0, 26)
 DescLbl.BackgroundTransparency = 1
 DescLbl.Font = Enum.Font.SourceSans
 DescLbl.TextSize = 13
-DescLbl.TextColor3 = Library.Theme.SubTextColor
+DescLbl.TextColor3 = Library.Theme.TextColor
 DescLbl.TextXAlignment = Enum.TextXAlignment.Left
 DescLbl.TextWrapped = true
-DescLbl.Text = description
-DescLbl.Parent = Toast
-​local TimerBar = Instance.new("Frame")
-TimerBar.Size = UDim2.new(1, 0, 0, 3)
-TimerBar.Position = UDim2.new(0, 0, 1, -3)
-TimerBar.BackgroundColor3 = Library.Theme.AccentColor
-TimerBar.BorderSizePixel = 0
-TimerBar.Parent = Toast
-​Toast.Position = UDim2.new(Library.NotifySide == "Left" and -1 or 1, 0, 0, 0)
-TweenService:Create(Toast, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = UDim2.new(0, 0, 0, 0)}):Play()
-TweenService:Create(TimerBar, TweenInfo.new(duration, Enum.EasingStyle.Linear), {Size = UDim2.new(0, 0, 0, 3)}):Play()
+DescLbl.Text = desc
+DescLbl.Parent = Card
+​local targetHeight = 32 + (desc ~= "" and 20 or 0)
+TweenService:Create(Card, TweenInfo.new(0.25), { Size = UDim2.new(1, 0, 0, targetHeight) }):Play()
 ​task.delay(duration, function()
-local closeTween = TweenService:Create(Toast, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
-Position = UDim2.new(Library.NotifySide == "Left" and -1 or 1, 0, 0, 0)
-})
-closeTween:Play()
-closeTween.Completed:Connect(function()
-Toast:Destroy()
-end)
+if Card and Card.Parent then
+local tw = TweenService:Create(Card, TweenInfo.new(0.25), { Size = UDim2.new(1, 0, 0, 0) })
+tw:Play()
+tw.Completed:Connect(function()
+Card:Destroy()
 end)
 end
-​-- STREAMING_CHUNK:Implementing Window Creation Logic...
+end)
+end
+​function Library:SetDPIScale(scale)
+scale = math.clamp(scale or 1, 0.5, 2)
+Library.DPIScale = scale
+for _, child in ipairs(ScreenGui:GetChildren()) do
+if child:IsA("Frame") and child.Name ~= "NotifyHolder" then
+child.UIScale.Scale = scale
+end
+end
+end
+​function Library:FormatWindows()
+for _, win in ipairs(Library.Windows) do
+if win and win.Frame then
+win.Frame.Visible = true
+end
+end
+end
+​-- Window Construction
 function Library:AddWindow(title, config)
 config = config or {}
 local mainColor = config.main_color or config.MainColor or Library.Theme.MainColor
-local minSize = config.min_size or config.MinSize or Vector2.new(500, 380)
-local canResize = config.can_resize ~= false
-​Library.Theme.MainColor = mainColor
-Library.Theme.AccentColor = mainColor
+local minSize = config.min_size or Vector2.new(380, 280)
 ​local WindowFrame = Instance.new("Frame")
 WindowFrame.Name = "Window_" .. title
 WindowFrame.Size = UDim2.new(0, minSize.X, 0, minSize.Y)
@@ -186,39 +168,38 @@ WindowFrame.Position = UDim2.new(0.5, -minSize.X / 2, 0.5, -minSize.Y / 2)
 WindowFrame.BackgroundColor3 = Library.Theme.BackgroundColor
 WindowFrame.BorderSizePixel = 0
 WindowFrame.ClipsDescendants = true
-WindowFrame.Active = true
-WindowFrame.Parent = GuiScreen
-WindowFrame:SetAttribute("BaseSize", UDim2.new(0, minSize.X, 0, minSize.Y))
+WindowFrame.Parent = ScreenGui
+​local UIScale = Instance.new("UIScale")
+UIScale.Scale = Library.DPIScale
+UIScale.Parent = WindowFrame
 ​local WindowCorner = Instance.new("UICorner")
-WindowCorner.CornerRadius = UDim.new(0, 6)
+WindowCorner.CornerRadius = UDim.new(0, 8)
 WindowCorner.Parent = WindowFrame
 ​local WindowStroke = Instance.new("UIStroke")
 WindowStroke.Color = Library.Theme.BorderColor
 WindowStroke.Thickness = 1
 WindowStroke.Parent = WindowFrame
-​-- Top Bar / Header
-local Header = Instance.new("Frame")
-Header.Name = "Header"
-Header.Size = UDim2.new(1, 0, 0, 32)
-Header.BackgroundColor3 = Library.Theme.HeaderColor
-Header.BorderSizePixel = 0
-Header.Parent = WindowFrame
+​local HeaderFrame = Instance.new("Frame")
+HeaderFrame.Size = UDim2.new(1, 0, 0, 30)
+HeaderFrame.BackgroundColor3 = mainColor
+HeaderFrame.BorderSizePixel = 0
+HeaderFrame.Parent = WindowFrame
 ​local HeaderCorner = Instance.new("UICorner")
-HeaderCorner.CornerRadius = UDim.new(0, 6)
-HeaderCorner.Parent = Header
-​local HeaderTitle = Instance.new("TextLabel")
-HeaderTitle.Size = UDim2.new(1, -20, 1, 0)
-HeaderTitle.Position = UDim2.new(0, 10, 0, 0)
-HeaderTitle.BackgroundTransparency = 1
-HeaderTitle.Font = Enum.Font.SourceSansBold
-HeaderTitle.TextSize = 15
-HeaderTitle.TextColor3 = Library.Theme.TextColor
-HeaderTitle.TextXAlignment = Enum.TextXAlignment.Left
-HeaderTitle.Text = title
-HeaderTitle.Parent = Header
-​-- Window Dragging Logic
+HeaderCorner.CornerRadius = UDim.new(0, 8)
+HeaderCorner.Parent = HeaderFrame
+​local TitleLbl = Instance.new("TextLabel")
+TitleLbl.Size = UDim2.new(1, -12, 1, 0)
+TitleLbl.Position = UDim2.new(0, 10, 0, 0)
+TitleLbl.BackgroundTransparency = 1
+TitleLbl.Font = Enum.Font.SourceSansBold
+TitleLbl.TextSize = 15
+TitleLbl.TextColor3 = Library.Theme.TextColor
+TitleLbl.TextXAlignment = Enum.TextXAlignment.Left
+TitleLbl.Text = title
+TitleLbl.Parent = HeaderFrame
+​-- Dragging Logic
 local dragging, dragInput, dragStart, startPos
-Header.InputBegan:Connect(function(input)
+HeaderFrame.InputBegan:Connect(function(input)
 if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 dragging = true
 dragStart = input.Position
@@ -230,7 +211,7 @@ end
 end)
 end
 end)
-​Header.InputChanged:Connect(function(input)
+​HeaderFrame.InputChanged:Connect(function(input)
 if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
 dragInput = input
 end
@@ -238,166 +219,108 @@ end)
 ​UserInputService.InputChanged:Connect(function(input)
 if input == dragInput and dragging then
 local delta = input.Position - dragStart
-WindowFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+WindowFrame.Position = UDim2.new(
+startPos.X.Scale, startPos.X.Offset + delta.X,
+startPos.Y.Scale, startPos.Y.Offset + delta.Y
+)
 end
 end)
-​-- Navigation Bar (Tabs Header)
+​-- Tab Bar
 local TabBar = Instance.new("Frame")
-TabBar.Name = "TabBar"
-TabBar.Size = UDim2.new(1, -20, 0, 28)
-TabBar.Position = UDim2.new(0, 10, 0, 38)
+TabBar.Size = UDim2.new(1, -12, 0, 26)
+TabBar.Position = UDim2.new(0, 6, 0, 34)
 TabBar.BackgroundTransparency = 1
 TabBar.Parent = WindowFrame
-​local TabListLayout = Instance.new("UIListLayout")
-TabListLayout.FillDirection = Enum.FillDirection.Horizontal
-TabListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-TabListLayout.Padding = UDim.new(0, 6)
-TabListLayout.Parent = TabBar
-​-- Container for Tab Contents
-local TabContentContainer = Instance.new("Frame")
-TabContentContainer.Name = "TabContentContainer"
-TabContentContainer.Size = UDim2.new(1, -20, 1, -76)
-TabContentContainer.Position = UDim2.new(0, 10, 0, 70)
-TabContentContainer.BackgroundTransparency = 1
-TabContentContainer.Parent = WindowFrame
+​local TabLayout = Instance.new("UIListLayout")
+TabLayout.FillDirection = Enum.FillDirection.Horizontal
+TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+TabLayout.Padding = UDim.new(0, 4)
+TabLayout.Parent = TabBar
+​-- Main Content Body
+local ContentHolder = Instance.new("Frame")
+ContentHolder.Size = UDim2.new(1, -12, 1, -68)
+ContentHolder.Position = UDim2.new(0, 6, 0, 64)
+ContentHolder.BackgroundTransparency = 1
+ContentHolder.Parent = WindowFrame
 ​local Tabs = {}
-local ActiveTab = nil
-​-- STREAMING_CHUNK:Implementing Window Object API Methods...
-local WindowObj = {
-Frame = WindowFrame,
-Tabs = Tabs
-}
+local WindowObj = { Frame = WindowFrame }
+local Window = WindowObj -- Fixed Window nil declaration issue
+​table.insert(Library.Windows, WindowObj)
 ​function WindowObj:SetAlwaysOnTop(alwaysOnTop)
-GuiScreen.DisplayOrder = alwaysOnTop and 9999 or 1
+ScreenGui.DisplayOrder = alwaysOnTop and 999 or 100
 end
 ​function WindowObj:SetCornerRadius(radius)
 WindowCorner.CornerRadius = UDim.new(0, radius)
 HeaderCorner.CornerRadius = UDim.new(0, radius)
 end
-​-- STREAMING_CHUNK:Implementing Tab Creation and Layout Engine...
-function Window:AddTab(tabName, icon)
+​function Window:AddTab(tabName, icon)
 local TabButton = Instance.new("TextButton")
-TabButton.Name = "Tab_" .. tabName
-TabButton.Size = UDim2.new(0, 100, 1, 0)
-TabButton.BackgroundColor3 = Library.Theme.GroupColor
+TabButton.Size = UDim2.new(0, 80, 1, 0)
+TabButton.BackgroundColor3 = Library.Theme.HeaderColor
 TabButton.BorderSizePixel = 0
 TabButton.Font = Enum.Font.SourceSansBold
-TabButton.TextSize = 14
+TabButton.TextSize = 13
 TabButton.TextColor3 = Library.Theme.SubTextColor
 TabButton.Text = (icon and (icon .. " ") or "") .. tabName
 TabButton.Parent = TabBar
 ​local TabBtnCorner = Instance.new("UICorner")
 TabBtnCorner.CornerRadius = UDim.new(0, 4)
 TabBtnCorner.Parent = TabButton
-​-- Content frame for Tab (Columns: Left & Right)
-local TabPage = Instance.new("Frame")
-TabPage.Name = "TabPage_" .. tabName
+​local TabPage = Instance.new("Frame")
 TabPage.Size = UDim2.new(1, 0, 1, 0)
 TabPage.BackgroundTransparency = 1
 TabPage.Visible = false
-TabPage.Parent = TabContentContainer
+TabPage.Parent = ContentHolder
 ​local LeftColumn = Instance.new("ScrollingFrame")
-LeftColumn.Name = "LeftColumn"
-LeftColumn.Size = UDim2.new(0.49, 0, 1, 0)
-LeftColumn.Position = UDim2.new(0, 0, 0, 0)
+LeftColumn.Size = UDim2.new(0.5, -3, 1, 0)
 LeftColumn.BackgroundTransparency = 1
 LeftColumn.BorderSizePixel = 0
-LeftColumn.ScrollBarThickness = 3
-LeftColumn.ScrollBarImageColor3 = Library.Theme.AccentColor
-LeftColumn.CanvasSize = UDim2.new(0, 0, 0, 0)
+LeftColumn.ScrollBarThickness = 2
 LeftColumn.Parent = TabPage
 ​local RightColumn = Instance.new("ScrollingFrame")
-RightColumn.Name = "RightColumn"
-RightColumn.Size = UDim2.new(0.49, 0, 1, 0)
-RightColumn.Position = UDim2.new(0.51, 0, 0, 0)
+RightColumn.Size = UDim2.new(0.5, -3, 1, 0)
+RightColumn.Position = UDim2.new(0.5, 3, 0, 0)
 RightColumn.BackgroundTransparency = 1
 RightColumn.BorderSizePixel = 0
-RightColumn.ScrollBarThickness = 3
-RightColumn.ScrollBarImageColor3 = Library.Theme.AccentColor
-RightColumn.CanvasSize = UDim2.new(0, 0, 0, 0)
+RightColumn.ScrollBarThickness = 2
 RightColumn.Parent = TabPage
-​local function SetupColumnLayout(col)
-local layout = Instance.new("UIListLayout")
-layout.SortOrder = Enum.SortOrder.LayoutOrder
-layout.Padding = UDim.new(0, 8)
-layout.Parent = col
-​layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-col.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
+​local LeftLayout = Instance.new("UIListLayout")
+LeftLayout.SortOrder = Enum.SortOrder.LayoutOrder
+LeftLayout.Padding = UDim.new(0, 6)
+LeftLayout.Parent = LeftColumn
+​local RightLayout = Instance.new("UIListLayout")
+RightLayout.SortOrder = Enum.SortOrder.LayoutOrder
+RightLayout.Padding = UDim.new(0, 6)
+RightLayout.Parent = RightColumn
+​LeftLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+LeftColumn.CanvasSize = UDim2.new(0, 0, 0, LeftLayout.AbsoluteContentSize.Y + 10)
 end)
+​RightLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+RightColumn.CanvasSize = UDim2.new(0, 0, 0, RightLayout.AbsoluteContentSize.Y + 10)
+end)
+​TabButton.MouseButton1Click:Connect(function()
+for _, t in pairs(Tabs) do
+t.Page.Visible = false
+t.Button.TextColor3 = Library.Theme.SubTextColor
+t.Button.BackgroundColor3 = Library.Theme.HeaderColor
 end
-​SetupColumnLayout(LeftColumn)
-SetupColumnLayout(RightColumn)
-​local function ActivateTab()
-for _, tabData in pairs(Tabs) do
-tabData.Button.BackgroundColor3 = Library.Theme.GroupColor
-tabData.Button.TextColor3 = Library.Theme.SubTextColor
-tabData.Page.Visible = false
-end
-TabButton.BackgroundColor3 = Library.Theme.AccentColor
-TabButton.TextColor3 = Library.Theme.TextColor
 TabPage.Visible = true
-ActiveTab = tabName
+TabButton.TextColor3 = Library.Theme.TextColor
+TabButton.BackgroundColor3 = Library.Theme.AccentColor
+end)
+​if #TabBar:GetChildren() == 2 then -- First added tab automatically activates
+TabPage.Visible = true
+TabButton.TextColor3 = Library.Theme.TextColor
+TabButton.BackgroundColor3 = Library.Theme.AccentColor
 end
-​TabButton.MouseButton1Click:Connect(ActivateTab)
-​if not ActiveTab then
-ActivateTab()
-end
-​-- STREAMING_CHUNK:Implementing Component Parent Engine (Groupbox / Direct Parent)...
-local TabObj = {}
+​local TabObj = {}
 ​local function ResolveParent(side)
 if side == "Right" or side == "right" then
 return RightColumn
 end
 return LeftColumn
 end
-​-- STREAMING_CHUNK:Implementing AddGroupbox and Container Methods...
-function TabObj:AddGroupbox(groupConfig)
-groupConfig = type(groupConfig) == "string" and { Name = groupConfig } or (groupConfig or {})
-local groupName = groupConfig.Name or groupConfig.Text or "Group"
-local side = groupConfig.Side or "Left"
-local targetParent = ResolveParent(side)
-​local GroupFrame = Instance.new("Frame")
-GroupFrame.Name = "Group_" .. groupName
-GroupFrame.Size = UDim2.new(1, -6, 0, 40)
-GroupFrame.BackgroundColor3 = Library.Theme.GroupColor
-GroupFrame.BorderSizePixel = 0
-GroupFrame.Parent = targetParent
-​local GroupCorner = Instance.new("UICorner")
-GroupCorner.CornerRadius = UDim.new(0, 5)
-GroupCorner.Parent = GroupFrame
-​local GroupStroke = Instance.new("UIStroke")
-GroupStroke.Color = Library.Theme.BorderColor
-GroupStroke.Thickness = 1
-GroupStroke.Parent = GroupFrame
-​local GroupHeader = Instance.new("TextLabel")
-GroupHeader.Size = UDim2.new(1, -16, 0, 24)
-GroupHeader.Position = UDim2.new(0, 8, 0, 4)
-GroupHeader.BackgroundTransparency = 1
-GroupHeader.Font = Enum.Font.SourceSansBold
-GroupHeader.TextSize = 14
-GroupHeader.TextColor3 = Library.Theme.AccentColor
-GroupHeader.TextXAlignment = Enum.TextXAlignment.Left
-GroupHeader.Text = groupName
-GroupHeader.Parent = GroupFrame
-​local GroupContainer = Instance.new("Frame")
-GroupContainer.Name = "Container"
-GroupContainer.Size = UDim2.new(1, -16, 0, 0)
-GroupContainer.Position = UDim2.new(0, 8, 0, 30)
-GroupContainer.BackgroundTransparency = 1
-GroupContainer.Parent = GroupFrame
-​local GroupLayout = Instance.new("UIListLayout")
-GroupLayout.SortOrder = Enum.SortOrder.LayoutOrder
-GroupLayout.Padding = UDim.new(0, 6)
-GroupLayout.Parent = GroupContainer
-​GroupLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-GroupContainer.Size = UDim2.new(1, -16, 0, GroupLayout.AbsoluteContentSize.Y)
-GroupFrame.Size = UDim2.new(1, -6, 0, GroupLayout.AbsoluteContentSize.Y + 36)
-end)
-​local ContainerObj = {}
-TabObj:BindElementMethods(ContainerObj, GroupContainer)
-return ContainerObj
-end
-​-- STREAMING_CHUNK:Implementing UI Elements Binding Logic...
+​-- Define BindElementMethods BEFORE AddGroupbox (Fixes nil call bug)
 function TabObj:BindElementMethods(targetObj, container)
 container = container or LeftColumn
 ​-- 1. AddLabel
@@ -418,10 +341,10 @@ Lbl.Parent = LabelFrame
 ​local labelData = {
 Text = tostring(text),
 SetText = function(self, newText)
-self.Text = tostring(newText)
-Lbl.Text = self.Text
+rawset(self, "Text", tostring(newText))
+Lbl.Text = rawget(self, "Text")
 end,
-Get = function(self) return self.Text end,
+Get = function(self) return rawget(self, "Text") end,
 Set = function(self, newText) self:SetText(newText) end,
 SetValue = function(self, newText) self:SetText(newText) end
 }
@@ -498,21 +421,22 @@ DotCorner.CornerRadius = UDim.new(1, 0)
 DotCorner.Parent = ToggleDot
 ​local switchData = {
 Value = defaultVal,
-Get = function(self) return self.Value end,
+Get = function(self) return rawget(self, "Value") end,
 Set = function(self, val)
-self.Value = not not val
+rawset(self, "Value", not not val)
+local currentVal = rawget(self, "Value")
 TweenService:Create(ToggleBg, TweenInfo.new(0.2), {
-BackgroundColor3 = self.Value and Library.Theme.AccentColor or Library.Theme.HeaderColor
+BackgroundColor3 = currentVal and Library.Theme.AccentColor or Library.Theme.HeaderColor
 }):Play()
 TweenService:Create(ToggleDot, TweenInfo.new(0.2), {
-Position = self.Value and UDim2.new(1, -16, 0.5, -7) or UDim2.new(0, 2, 0.5, -7)
+Position = currentVal and UDim2.new(1, -16, 0.5, -7) or UDim2.new(0, 2, 0.5, -7)
 }):Play()
-pcall(callback, self.Value)
+pcall(callback, currentVal)
 end,
 SetValue = function(self, val) self:Set(val) end
 }
 ​ToggleBg.MouseButton1Click:Connect(function()
-switchData:Set(not switchData.Value)
+switchData:Set(not rawget(switchData, "Value"))
 end)
 ​if elementId then RegisterElement(elementId, switchData, true) end
 return switchData
@@ -570,7 +494,7 @@ FillCorner.CornerRadius = UDim.new(1, 0)
 FillCorner.Parent = Fill
 ​local sliderData = {
 Value = defaultVal,
-Get = function(self) return self.Value end,
+Get = function(self) return rawget(self, "Value") end,
 Set = function(self, val)
 local clamped = math.clamp(tonumber(val) or minVal, minVal, maxVal)
 if roundDigits > 0 then
@@ -579,10 +503,10 @@ clamped = math.round(clamped * mult) / mult
 else
 clamped = math.round(clamped)
 end
-self.Value = clamped
-ValLbl.Text = tostring(self.Value) .. suffix
-Fill.Size = UDim2.new((self.Value - minVal) / (maxVal - minVal), 0, 1, 0)
-pcall(callback, self.Value)
+rawset(self, "Value", clamped)
+ValLbl.Text = tostring(clamped) .. suffix
+Fill.Size = UDim2.new((clamped - minVal) / (maxVal - minVal), 0, 1, 0)
+pcall(callback, clamped)
 end,
 SetValue = function(self, val) self:Set(val) end
 }
@@ -654,17 +578,16 @@ BoxPadding.PaddingLeft = UDim.new(0, 6)
 BoxPadding.Parent = Box
 ​local inputData = {
 Value = defaultVal,
-Get = function(self) return self.Value end,
+Get = function(self) return rawget(self, "Value") end,
 Set = function(self, val)
-self.Value = tostring(val or "")
-Box.Text = self.Value
-pcall(callback, self.Value)
+rawset(self, "Value", tostring(val or ""))
+Box.Text = rawget(self, "Value")
+pcall(callback, rawget(self, "Value"))
 end,
 SetValue = function(self, val) self:Set(val) end
 }
 ​Box.FocusLost:Connect(function()
-inputData.Value = Box.Text
-pcall(callback, inputData.Value)
+inputData:Set(Box.Text)
 end)
 ​if elementId then RegisterElement(elementId, inputData) end
 return inputData
@@ -722,32 +645,34 @@ ListLayout.Parent = ListHolder
 local dropdownData = {
 Value = isMulti and {} or "",
 Values = values,
-Get = function(self) return self.Value end,
+Get = function(self) return rawget(self, "Value") end,
 Set = function(self, option)
 if isMulti then
+local currentVal = rawget(self, "Value") or {}
 if type(option) == "table" then
-self.Value = option
+currentVal = option
 else
-self.Value[tostring(option)] = not self.Value[tostring(option)]
+currentVal[tostring(option)] = not currentVal[tostring(option)]
 end
+rawset(self, "Value", currentVal)
 ​local selectedKeys = {}
-for k, v in pairs(self.Value) do
+for k, v in pairs(currentVal) do
 if v then table.insert(selectedKeys, k) end
 end
 MainBtn.Text = " " .. (#selectedKeys > 0 and table.concat(selectedKeys, ", ") or "None")
 else
-self.Value = tostring(option)
-MainBtn.Text = " " .. self.Value
+rawset(self, "Value", tostring(option))
+MainBtn.Text = " " .. rawget(self, "Value")
 end
-pcall(callback, self.Value)
+pcall(callback, rawget(self, "Value"))
 end,
 SetValue = function(self, opt) self:Set(opt) end,
 SetValues = function(self, newValues)
-self.Values = newValues or {}
+rawset(self, "Values", newValues or {})
 for _, child in ipairs(ListHolder:GetChildren()) do
 if child:IsA("TextButton") then child:Destroy() end
 end
-​for _, val in ipairs(self.Values) do
+​for _, val in ipairs(rawget(self, "Values")) do
 local OptBtn = Instance.new("TextButton")
 OptBtn.Size = UDim2.new(1, 0, 0, 20)
 OptBtn.BackgroundTransparency = 1
@@ -770,7 +695,7 @@ end
 ​MainBtn.MouseButton1Click:Connect(function()
 isOpen = not isOpen
 if isOpen then
-local count = #dropdownData.Values
+local count = #(rawget(dropdownData, "Values") or {})
 ListHolder.Size = UDim2.new(1, 0, 0, count * 20)
 DropFrame.Size = UDim2.new(1, 0, 0, 52 + count * 20)
 else
@@ -795,7 +720,7 @@ Line.BackgroundColor3 = Library.Theme.DividerColor
 Line.BorderSizePixel = 0
 Line.Parent = DivFrame
 end
-​-- 8. AddKeybind / AddKeyPicker
+​-- 8. AddKeybind / AddKeyPicker (Fixed duplicated assignments)
 function targetObj:AddKeybind(name, callback, opts)
 opts = opts or {}
 callback = callback or function() end
@@ -829,20 +754,14 @@ KeyBtn.Parent = KeyFrame
 ​local BtnCorner = Instance.new("UICorner")
 BtnCorner.CornerRadius = UDim.new(0, 4)
 BtnCorner.Parent = KeyBtn
-BtnCorner.Parent = KeyBtn
-BtnCorner.Parent = KeyBtn
-BtnCorner.Parent = KeyBtn
-BtnCorner.Parent = KeyBtn
-BtnCorner.Parent = KeyBtn
-BtnCorner.Parent = KeyBtn
 ​local binding = false
 local keybindData = {
 Value = defaultKey,
-Get = function(self) return self.Value end,
+Get = function(self) return rawget(self, "Value") end,
 Set = function(self, key)
 if type(key) == "string" then key = Enum.KeyCode[key] end
-self.Value = key
-KeyBtn.Text = key.Name
+rawset(self, "Value", key)
+KeyBtn.Text = key and key.Name or "None"
 end,
 SetValue = function(self, key) self:Set(key) end
 }
@@ -855,8 +774,8 @@ if binding and input.UserInputType == Enum.UserInputType.Keyboard then
 binding = false
 keybindData:Set(input.KeyCode)
 pcall(callback, input.KeyCode)
-elseif not gpe and input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == keybindData.Value then
-pcall(callback, keybindData.Value)
+elseif not gpe and input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == rawget(keybindData, "Value") then
+pcall(callback, rawget(keybindData, "Value"))
 end
 end)
 ​if elementId then RegisterElement(elementId, keybindData) end
@@ -893,9 +812,9 @@ BoxCorner.CornerRadius = UDim.new(0, 4)
 BoxCorner.Parent = ColorBox
 ​local colorData = {
 Value = defaultColor,
-Get = function(self) return self.Value end,
+Get = function(self) return rawget(self, "Value") end,
 Set = function(self, col)
-self.Value = col
+rawset(self, "Value", col)
 ColorBox.BackgroundColor3 = col
 pcall(callback, col)
 end,
@@ -905,14 +824,57 @@ SetValue = function(self, col) self:Set(col) end
 return colorData
 end
 end
+​-- Groupbox creation method
+function TabObj:AddGroupbox(groupConfig)
+groupConfig = type(groupConfig) == "string" and { Name = groupConfig } or (groupConfig or {})
+local groupName = groupConfig.Name or groupConfig.Text or "Group"
+local side = groupConfig.Side or "Left"
+local targetParent = ResolveParent(side)
+​local GroupFrame = Instance.new("Frame")
+GroupFrame.Name = "Group_" .. groupName
+GroupFrame.Size = UDim2.new(1, -6, 0, 40)
+GroupFrame.BackgroundColor3 = Library.Theme.GroupColor
+GroupFrame.BorderSizePixel = 0
+GroupFrame.Parent = targetParent
+​local GroupCorner = Instance.new("UICorner")
+GroupCorner.CornerRadius = UDim.new(0, 5)
+GroupCorner.Parent = GroupFrame
+​local GroupStroke = Instance.new("UIStroke")
+GroupStroke.Color = Library.Theme.BorderColor
+GroupStroke.Thickness = 1
+GroupStroke.Parent = GroupFrame
+​local GroupHeader = Instance.new("TextLabel")
+GroupHeader.Size = UDim2.new(1, -16, 0, 24)
+GroupHeader.Position = UDim2.new(0, 8, 0, 4)
+GroupHeader.BackgroundTransparency = 1
+GroupHeader.Font = Enum.Font.SourceSansBold
+GroupHeader.TextSize = 14
+GroupHeader.TextColor3 = Library.Theme.AccentColor
+GroupHeader.TextXAlignment = Enum.TextXAlignment.Left
+GroupHeader.Text = groupName
+GroupHeader.Parent = GroupFrame
+​local GroupContainer = Instance.new("Frame")
+GroupContainer.Name = "Container"
+GroupContainer.Size = UDim2.new(1, -16, 0, 0)
+GroupContainer.Position = UDim2.new(0, 8, 0, 30)
+GroupContainer.BackgroundTransparency = 1
+GroupContainer.Parent = GroupFrame
+​local GroupLayout = Instance.new("UIListLayout")
+GroupLayout.SortOrder = Enum.SortOrder.LayoutOrder
+GroupLayout.Padding = UDim.new(0, 6)
+GroupLayout.Parent = GroupContainer
+​GroupLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+GroupContainer.Size = UDim2.new(1, -16, 0, GroupLayout.AbsoluteContentSize.Y)
+GroupFrame.Size = UDim2.new(1, -6, 0, GroupLayout.AbsoluteContentSize.Y + 36)
+end)
+​local ContainerObj = {}
+TabObj:BindElementMethods(ContainerObj, GroupContainer)
+return ContainerObj
+end
 ​TabObj:BindElementMethods(TabObj, LeftColumn)
 Tabs[tabName] = { Button = TabButton, Page = TabPage, Object = TabObj }
 return TabObj
 end
 ​return Window, WindowObj
-end
-​-- STREAMING_CHUNK:Implementing Format Windows Helper...
-function Library:FormatWindows()
--- Legacy compatibility call
 end
 ​return Library
