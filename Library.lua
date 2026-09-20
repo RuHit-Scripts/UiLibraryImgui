@@ -970,17 +970,11 @@ function library:AddWindow(title, options)
 		local SplitFrame = Window:FindFirstChild("TabSelection"):FindFirstChild("Frame")
 		local Toggle = Bar:FindFirstChild("Toggle")
 
-		spawn(function()
-			while true do
-				Bar.BackgroundColor3 = options.main_color
-				Base.BackgroundColor3 = options.main_color
-				Base.BackgroundColor3 = options.main_color
-				Top.BackgroundColor3 = options.main_color
-				SplitFrame.BackgroundColor3 = options.main_color
-
-				RS.Heartbeat:Wait()
-			end
-		end)
+		Bar.BackgroundColor3 = options.main_color
+		Base.BackgroundColor3 = options.main_color
+		Base.BackgroundColor3 = options.main_color
+		Top.BackgroundColor3 = options.main_color
+		SplitFrame.BackgroundColor3 = options.main_color
 
 	end
 
@@ -1198,14 +1192,9 @@ function library:AddWindow(title, options)
 						button.ZIndex = button.ZIndex + (windows * 10)
 						button:GetChildren()[1].ZIndex = button:GetChildren()[1].ZIndex + (windows * 10)
 
-						spawn(function()
-							while true do
-								if button and button:GetChildren()[1] then
-									button:GetChildren()[1].BackgroundColor3 = options.main_color
-								end
-								RS.Heartbeat:Wait()
-							end
-						end)
+						if button and button:GetChildren()[1] then
+							button:GetChildren()[1].BackgroundColor3 = options.main_color
+						end
 
 						button.MouseButton1Click:Connect(function()
 							ripple(button, mouse.X, mouse.Y)
@@ -1230,14 +1219,9 @@ function library:AddWindow(title, options)
 						switch.ZIndex = switch.ZIndex + (windows * 10)
 						switch:GetChildren()[1].ZIndex = switch:GetChildren()[1].ZIndex + (windows * 10)
 
-						spawn(function()
-							while true do
-								if switch and switch:GetChildren()[1] then
-									switch:GetChildren()[1].BackgroundColor3 = options.main_color
-								end
-								RS.Heartbeat:Wait()
-							end
-						end)
+						if switch and switch:GetChildren()[1] then
+							switch:GetChildren()[1].BackgroundColor3 = options.main_color
+						end
 
 						local toggled = false
 						switch.MouseButton1Click:Connect(function()
@@ -1974,14 +1958,9 @@ local object = prefabs:FindFirstChild("DropdownButton"):Clone()
 						folder.Parent = new_tab
 						button.Text = "      " .. folder_name
 
-						spawn(function()
-							while true do
-								if button and button:GetChildren()[1] then
-									button:GetChildren()[1].BackgroundColor3 = options.main_color
-								end
-								RS.Heartbeat:Wait()
-							end
-						end)
+						if button and button:GetChildren()[1] then
+							button:GetChildren()[1].BackgroundColor3 = options.main_color
+						end
 
 						local function gFolderLen()
 							local n = 25
@@ -2006,12 +1985,10 @@ local object = prefabs:FindFirstChild("DropdownButton"):Clone()
 							open = not open
 						end)
 
-						spawn(function()
-							while true do
-								Resize(folder, {Size = UDim2.new(1, 0, 0, (open and gFolderLen() or 20))}, options.tween_time)
-								wait()
-							end
-						end)
+						local function updateFolderHeight()
+							Resize(folder, {Size = UDim2.new(1, 0, 0, (open and gFolderLen() or SZ(20)))}, options.tween_time)
+						end
+						task.delay(0.1, updateFolderHeight)
 
 						for i,v in pairs(tab_data) do
 							folder_data[i] = function(...)
