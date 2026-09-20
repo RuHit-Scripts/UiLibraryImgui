@@ -1,4 +1,3 @@
--- STREAMING_CHUNK:Initializing GUI options and CoreGui setup...
 local ui_options = {
 	main_color = Color3.fromRGB(41, 74, 122),
 	min_size = Vector2.new(400, 300),
@@ -12,7 +11,6 @@ do
 	if imgui then imgui:Destroy() end
 end
 
--- STREAMING_CHUNK:Creating GUI structure and Prefabs...
 local cloneref = cloneref and cloneref or function(...) return ... end
 local CoreGui = cloneref(game:GetService("CoreGui"))
 local UIS = game:GetService("UserInputService")
@@ -96,7 +94,6 @@ local inputButton = Instance.new("TextButton")
 local inputRoundify4px = Instance.new("ImageLabel")
 local windowsFrame = Instance.new("Frame")
 
--- STREAMING_CHUNK:Configuring GUI parent and prefabs properties...
 imgui.Name = "imgui"
 imgui.Parent = gethui and gethui() or (CoreGui or LocalPlayer:WaitForChild("PlayerGui"))
 imgui.ResetOnSpawn = false
@@ -823,7 +820,6 @@ windowsFrame.BackgroundTransparency = 1
 windowsFrame.Position = UDim2.new(0, 20, 0, 20)
 windowsFrame.Size = UDim2.new(1, -20, 1, -20)
 
--- STREAMING_CHUNK:Adding Floating Mobile Toggle Button...
 if ui_options.mobile_toggle_button then
 	local mobileButton = Instance.new("TextButton")
 	mobileButton.Name = "MobileToggleUI"
@@ -889,7 +885,6 @@ if ui_options.mobile_toggle_button then
 	end)
 end
 
--- STREAMING_CHUNK:Defining Touch & Mouse Input Helpers...
 local root = imgui
 
 local checks = {
@@ -1009,7 +1004,6 @@ function library:FormatWindows()
 	format_windows()
 end
 
--- STREAMING_CHUNK:Implementing AddWindow with Mobile and PC Drag & Resize...
 function library:AddWindow(title, options)
 	windows = windows + 1
 	local dropdown_open = false
@@ -1157,7 +1151,6 @@ function library:AddWindow(title, options)
 		end)
 	end
 
-	-- STREAMING_CHUNK:Adding Tab System and Component Creation Logic...
 	do -- UI Elements
 		local tabs = Window:FindFirstChild("Tabs")
 		local tab_selection = Window:FindFirstChild("TabSelection")
@@ -1321,7 +1314,6 @@ function library:AddWindow(title, options)
 					return textbox
 				end
 
-				-- STREAMING_CHUNK:Adding Touch-Friendly Slider Component...
 				function tab_data:AddSlider(slider_text, callback, slider_options)
 					local slider_data = {}
 
@@ -1552,7 +1544,6 @@ function library:AddWindow(title, options)
 					return dropdown_data, dropdown
 				end
 
-				-- STREAMING_CHUNK:Adding Touch-Friendly ColorPicker Component...
 				function tab_data:AddColorPicker(callback)
 					local color_picker_data = {}
 					callback = typeof(callback) == "function" and callback or function() end
@@ -1663,7 +1654,6 @@ function library:AddWindow(title, options)
 					return color_picker_data, color_picker
 				end
 
-				-- STREAMING_CHUNK:Adding Console and Utilities Components...
 				function tab_data:AddConsole(console_options)
 					local console_data = {}
 					console_options = typeof(console_options) == "table" and console_options or { ["readonly"] = true, ["full"] = false }
@@ -1831,5 +1821,16 @@ function library:AddWindow(title, options)
 
 	return window_data, Window
 end
+
+function library:Unload()
+	if imgui then pcall(function() imgui:Destroy() end) end
+end
+
+function imgui:Unload()
+	pcall(function() library:Unload() end)
+end
+
+_G.IMGUI = library
+shared.IMGUI = library
 
 return library
